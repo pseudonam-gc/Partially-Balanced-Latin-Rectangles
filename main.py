@@ -22,7 +22,7 @@ def balance(n, k):
     t = 0
     for i in range(1, n):
         for j in range(i+1, n+1):
-            t += 1/abs(i-j)**2
+            t += 1/abs(i-j)
     #print (n, k, t, k*t/n/(n-1)*2)
     return k*t/n/(n-1)*2
 
@@ -35,7 +35,7 @@ def rectangleImbalance(a):
             for row in range(a.shape[0]): 
                 i, = np.where(a[row] == u)
                 j, = np.where(a[row] == v)
-                local_imbalance += 1/(abs(i-j))**2
+                local_imbalance += 1/(abs(i-j))
                 # compare the distances across every row, or something
             imbalance += abs(local_imbalance-b)
             #if abs(local_imbalance-b) > imbalance:
@@ -203,7 +203,7 @@ table_array = []
 tables = {}
 
 # read in all files in /tables
-for file in Path('inversesquare').glob('*.csv'):
+for file in Path('inverse').glob('*.csv'):
     numbers = file.stem[4:].split("_")
     i = int(numbers[1])
     j = int(numbers[0])
@@ -216,7 +216,7 @@ for i in values:
     table[i[0]][i[1]] = values[i]
 for i in table:
     print (i)
-DF = pd.DataFrame(tables)
+DF = pd.DataFrame(table)
 DF.to_csv("table.csv", index=False, header=False)
 
 MAX_N = 12
@@ -261,7 +261,7 @@ for k in range(2, MAX_N+1):
                 a = generateBoringLatinSquare(n)
                 reset = 40
         DF = pd.DataFrame(tables[(n, k)])
-        DF.to_csv("inversesquare/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
+        DF.to_csv("inverse/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
 
 #for i in tables:
     # send each of the tables to a file named file_n_k.csv
