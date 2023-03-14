@@ -17,17 +17,25 @@ def reduce(array):
     return (a)
 
 def balance(n, k):
+    t = 0
+    for i in range(1, n):
+        for j in range(i+1, n+1):
+            t += pow(0.5, abs(i-j))
+    return k*t/n/(n-1)*2
     # initial imbalance: return k*(n+1)/3
     # current imbalance: return the average of recriprocals of paired distances
+    # reciprocal of the average of paired distances
+    """
     t = 0
     for i in range(1, n):
         for j in range(i+1, n+1):
             t += 1/abs(i-j)
     #print (n, k, t, k*t/n/(n-1)*2)
-    return k*t/n/(n-1)*2
+    return k*t/n/(n-1)*2"""
 
 def rectangleImbalance(a):
     b = balance(a.shape[1], a.shape[0]) 
+    total_imbalance = 0
     imbalance = 0
     for u in range(1, a.shape[1]): 
         for v in range(u+1, a.shape[1]+1):
@@ -35,12 +43,11 @@ def rectangleImbalance(a):
             for row in range(a.shape[0]): 
                 i, = np.where(a[row] == u)
                 j, = np.where(a[row] == v)
-                local_imbalance += 1/(abs(i-j))
-                # compare the distances across every row, or something
-            imbalance += abs(local_imbalance-b)
+                local_imbalance += pow(0.5, abs(i-j)[0])
+            total_imbalance += abs(local_imbalance-b)
             #if abs(local_imbalance-b) > imbalance:
             #    imbalance = abs(local_imbalance-b)
-    return imbalance
+    return total_imbalance
 
 def orderImbalance(a):
     b = balance(a.shape[1], a.shape[0])
@@ -197,27 +204,18 @@ def shuffleMatrix(a): #shuffles two columns of a matrix
     b[:, c2] = temp
     return b
 
-
 values = {}
 table_array = []
 tables = {}
 
 # read in all files in /tables
-for file in Path('inverse').glob('*.csv'):
+for file in Path('exp').glob('*.csv'):
     numbers = file.stem[4:].split("_")
     i = int(numbers[1])
     j = int(numbers[0])
     tables[(i, j)] = np.genfromtxt(file, delimiter=',')
 for i in tables:
     values[i] = rectangleImbalance(tables[i])
-    
-table = np.zeros([15, 15])
-for i in values:
-    table[i[0]][i[1]] = values[i]
-for i in table:
-    print (i)
-DF = pd.DataFrame(table)
-DF.to_csv("table.csv", index=False, header=False)
 
 MAX_N = 12
 for k in range(2, MAX_N+1):
@@ -230,7 +228,7 @@ for k in range(2, MAX_N+1):
         squares = defaultdict(lambda: 0)
         c = 0
         #print (a)
-        minImbalance = 9999
+        minImbalance = 99999999
         reset = 40
         for rng in range(120):
             # change matrix 
@@ -253,7 +251,7 @@ for k in range(2, MAX_N+1):
                 if type(r) == int:
                     values[(n, k)] = r
                 else: 
-                    values[(n, k)] = r[0]
+                    values[(n, k)] = r
                 tables[(n, k)] = a[:k]
                 if r == 0:
                     break
@@ -261,11 +259,13 @@ for k in range(2, MAX_N+1):
                 a = generateBoringLatinSquare(n)
                 reset = 40
         DF = pd.DataFrame(tables[(n, k)])
-        DF.to_csv("inverse/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
-
-#for i in tables:
-    # send each of the tables to a file named file_n_k.csv
-    #w = csv.writer(fin, quoting=csv.QUOTE_ALL)
-
+        DF.to_csv("exp/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
 
 print (tables)
+
+table = np.zeros([15, 15])
+for i in values:
+    table[i[0]][i[1]] = values[i]
+
+DF = pd.DataFrame(table)
+DF.to_csv("table.csv", index=False, header=False)
