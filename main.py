@@ -17,11 +17,12 @@ def reduce(array):
     return (a)
 
 def balance(n, k):
-    t = 0
-    for i in range(1, n):
-        for j in range(i+1, n+1):
-            t += pow(0.5, abs(i-j))
-    return k*t/n/(n-1)*2
+    #t = 0
+    #for i in range(1, n):
+    #    for j in range(i+1, n+1):
+    #        t += pow(0.5, abs(i-j))
+    #return k*t/n/(n-1)*2
+    return k*(n+1)/3
     # initial imbalance: return k*(n+1)/3
     # current imbalance: return the average of recriprocals of paired distances
     # reciprocal of the average of paired distances
@@ -33,7 +34,20 @@ def balance(n, k):
     #print (n, k, t, k*t/n/(n-1)*2)
     return k*t/n/(n-1)*2"""
 
-def rectangleImbalance(a):
+def maxImbalance(a):
+    b = balance(a.shape[1], a.shape[0]) 
+    imbalance = 0
+    for u in range(1, a.shape[1]): 
+        for v in range(u+1, a.shape[1]+1):
+            local_imbalance = 0
+            for row in range(a.shape[0]): 
+                i, = np.where(a[row] == u)
+                j, = np.where(a[row] == v)
+                local_imbalance += abs(i-j)
+            imbalance = max(abs(local_imbalance-b), imbalance)
+    return imbalance
+
+def powerImbalance(a):
     b = balance(a.shape[1], a.shape[0]) 
     total_imbalance = 0
     imbalance = 0
@@ -48,6 +62,9 @@ def rectangleImbalance(a):
             #if abs(local_imbalance-b) > imbalance:
             #    imbalance = abs(local_imbalance-b)
     return total_imbalance
+
+def rectangleImbalance(a):
+    return maxImbalance(a)
 
 def orderImbalance(a):
     b = balance(a.shape[1], a.shape[0])
@@ -209,7 +226,7 @@ table_array = []
 tables = {}
 
 # read in all files in /tables
-for file in Path('exp').glob('*.csv'):
+for file in Path('max').glob('*.csv'):
     numbers = file.stem[4:].split("_")
     i = int(numbers[1])
     j = int(numbers[0])
@@ -217,7 +234,7 @@ for file in Path('exp').glob('*.csv'):
 for i in tables:
     values[i] = rectangleImbalance(tables[i])
 
-MAX_N = 12
+MAX_N = 5
 for k in range(2, MAX_N+1):
     for n in range(k,MAX_N+1):
         if (n, k) in values and values[(n, k)] == 0:
@@ -259,7 +276,7 @@ for k in range(2, MAX_N+1):
                 a = generateBoringLatinSquare(n)
                 reset = 40
         DF = pd.DataFrame(tables[(n, k)])
-        DF.to_csv("exp/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
+        DF.to_csv("max/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
 
 print (tables)
 
