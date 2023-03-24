@@ -234,7 +234,7 @@ for file in Path('max').glob('*.csv'):
 for i in tables:
     values[i] = rectangleImbalance(tables[i])
 
-MAX_N = 5
+MAX_N = 12
 for k in range(2, MAX_N+1):
     for n in range(k,MAX_N+1):
         if (n, k) in values and values[(n, k)] == 0:
@@ -245,9 +245,10 @@ for k in range(2, MAX_N+1):
         squares = defaultdict(lambda: 0)
         c = 0
         #print (a)
-        minImbalance = 99999999
+        if (n, k) in values:
+            minImbalance = values[(n, k)]
         reset = 40
-        for rng in range(120):
+        for rng in range(180):
             # change matrix 
             a = toIncidence(a)
             reset -= 1
@@ -256,7 +257,7 @@ for k in range(2, MAX_N+1):
                 if perfect == 1:
                     break
             a = toLatinSquare(a)
-            for i in range(35):
+            for i in range(60):
                 b = shuffleMatrix(a)
                 if rectangleImbalance(b[:k]) < rectangleImbalance(a[:k]):
                     a = b
@@ -274,11 +275,11 @@ for k in range(2, MAX_N+1):
                     break
             if reset == 0:
                 a = generateBoringLatinSquare(n)
-                reset = 40
+                reset = 60
         DF = pd.DataFrame(tables[(n, k)])
         DF.to_csv("max/file"+str(k)+"_"+str(n)+".csv", index=False, header=False)
 
-print (tables)
+#print (tables)
 
 table = np.zeros([15, 15])
 for i in values:
