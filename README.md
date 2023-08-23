@@ -4,9 +4,11 @@ This was an undergraduate research project conducted under Professor Sergey Bere
 
 In a k x n Latin rectangle, each cell has a number in {1, 2, 3… n} and no number is repeated in every row and in every column. Consider the following example:
 
-1, 2, 3, 4
-2, 3, 4, 1
-3, 4, 1, 2
+| x | x | x | x |
+| - | - | - | - |
+| 1 | 2 | 3 | 4 |
+| 2 | 3 | 4 | 1 |
+| 3 | 4 | 1 | 2 |
 
 Latin rectangles have unique properties, making them extremely applicable in many fields that rely on experimental design. They have been found to be particularly useful when time is a confounding or limiting factor in an experiment. Latin squares have proven popular enough that MEDLINE, a bibliographic database, found over 4,000 publications with the phrase “Latin square” in important locations, such as the title or abstract [1]. 
 
@@ -44,17 +46,20 @@ Most imbalance functions examine every pair of elements in each row. The time co
 
 The pseudocode for computing imbalance and generating low-imbalance Latin rectangles are presented below:
 
-##### Sum imbalance function, using the function g(x) as a parameter
+### Sum imbalance function, using the function g(x) as a parameter
 
+```
 for all (u, v):
 	s_g(u, v) = 0
-for all (i): # loops through all rows
+for all (i): 
 s_g(u, v) += g(d_i(u, v))
      total_imbalance += abs(s_g(u, v)-average_imbalance)
 return total_imbalance
+```
 
-##### Generating low-imbalance LRs
+### Generating low-imbalance LRs
 
+```
 for all (k, n):
 	bestImbalance = 1e10 (or some other high constant)
 	repeat [a] times:
@@ -69,6 +74,7 @@ repeat [b] times:
 			bestImbalance = imbalance(L)
 			bestRectangle = L
 return bestRectangle
+```
 
 ### Results
 
@@ -109,4 +115,5 @@ Order-balanced Latin squares also have substantial use, especially when it comes
 ### References
 
 [1] Richardson, John T. E. (2018). The use of Latin-square designs in educational and psychological research. Educational Research Review, 24 pp. 84–97.
+
 [2] Diaz, Mateo, et al. In Search of Balance: The Challenge of Generating Balanced Latin Rectangles. Center for Applied Mathematics, Cornell University, 2017, https://www.cs.cornell.edu/gomes/pdf/2017_diaz_cpaior_balance.pdf. 
